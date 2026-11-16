@@ -1,5 +1,7 @@
 package automacao.dispositivo;
 
+import automacao.mediator.Evento;
+
 public class ArCondicionado extends Dispositivo implements Ligavel {
 
     public static final int TEMPERATURA_MINIMA = 16;
@@ -21,6 +23,7 @@ public class ArCondicionado extends Dispositivo implements Ligavel {
         }
         ligado = true;
         log("ligado em " + temperatura + "°C");
+        notificar(Evento.LIGADO);
     }
 
     @Override
@@ -31,6 +34,7 @@ public class ArCondicionado extends Dispositivo implements Ligavel {
         }
         ligado = false;
         log("desligado");
+        notificar(Evento.DESLIGADO);
     }
 
     @Override

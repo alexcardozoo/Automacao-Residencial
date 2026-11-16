@@ -1,12 +1,18 @@
 package automacao.dispositivo;
 
+import automacao.mediator.Evento;
+import automacao.mediator.MediadorAutomacao;
+
 /**
  * Base de todos os dispositivos da casa.
  * Cada dispositivo é identificado pelo seu tipo e pelo cômodo onde está instalado.
+ * Um dispositivo não conhece os outros: ele apenas avisa o mediador sobre
+ * mudanças no seu próprio estado.
  */
 public abstract class Dispositivo {
 
     private final String comodo;
+    private MediadorAutomacao mediador;
 
     protected Dispositivo(String comodo) {
         if (comodo == null || comodo.isBlank()) {
@@ -19,10 +25,18 @@ public abstract class Dispositivo {
         return comodo;
     }
 
-    /** Nome do tipo do dispositivo, ex.: "Lâmpada". */
+    public void conectar(MediadorAutomacao mediador) {
+        this.mediador = mediador;
+    }
+
+    protected void notificar(Evento evento) {
+        if (mediador != null) {
+            mediador.notificar(this, evento);
+        }
+    }
+
     public abstract String getTipo();
 
-    /** Descrição curta do estado atual, ex.: "ligada". */
     public abstract String getStatus();
 
     public String getIdentificacao() {

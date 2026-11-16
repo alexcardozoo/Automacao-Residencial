@@ -1,5 +1,7 @@
 package automacao.dispositivo;
 
+import automacao.mediator.Evento;
+
 public class Lampada extends Dispositivo implements Ligavel {
 
     private boolean ligada;
@@ -16,6 +18,7 @@ public class Lampada extends Dispositivo implements Ligavel {
         }
         ligada = true;
         log("ligada");
+        notificar(Evento.LIGADO);
     }
 
     @Override
@@ -26,6 +29,7 @@ public class Lampada extends Dispositivo implements Ligavel {
         }
         ligada = false;
         log("desligada");
+        notificar(Evento.DESLIGADO);
     }
 
     @Override
