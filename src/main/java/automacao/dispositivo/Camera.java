@@ -1,5 +1,7 @@
 package automacao.dispositivo;
 
+import automacao.mediator.Evento;
+
 public class Camera extends Dispositivo implements Ativavel {
 
     private boolean ativa;
@@ -16,6 +18,7 @@ public class Camera extends Dispositivo implements Ativavel {
         }
         ativa = true;
         log("ativada, gravando");
+        notificar(Evento.ATIVADO);
     }
 
     @Override
@@ -26,6 +29,17 @@ public class Camera extends Dispositivo implements Ativavel {
         }
         ativa = false;
         log("desativada");
+        notificar(Evento.DESATIVADO);
+    }
+
+    /** Simula o sensor da câmera. Só reporta movimento se estiver ativa. */
+    public void detectarMovimento() {
+        if (!ativa) {
+            log("movimento ignorado: câmera desativada");
+            return;
+        }
+        log("movimento detectado");
+        notificar(Evento.MOVIMENTO_DETECTADO);
     }
 
     @Override

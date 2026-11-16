@@ -1,5 +1,7 @@
 package automacao.dispositivo;
 
+import automacao.mediator.Evento;
+
 public class Portao extends Dispositivo implements Abrivel {
 
     private boolean aberto;
@@ -16,6 +18,7 @@ public class Portao extends Dispositivo implements Abrivel {
         }
         aberto = true;
         log("aberto");
+        notificar(Evento.ABERTO);
     }
 
     @Override
@@ -26,6 +29,7 @@ public class Portao extends Dispositivo implements Abrivel {
         }
         aberto = false;
         log("fechado");
+        notificar(Evento.FECHADO);
     }
 
     @Override
