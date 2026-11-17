@@ -7,4 +7,6 @@ public interface Ativavel {
     void desativar();
 
     boolean isAtivo();
+
+    String getIdentificacao();
 }

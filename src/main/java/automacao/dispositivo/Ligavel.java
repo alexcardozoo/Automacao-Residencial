@@ -7,4 +7,6 @@ public interface Ligavel {
     void desligar();
 
     boolean isLigado();
+
+    String getIdentificacao();
 }
