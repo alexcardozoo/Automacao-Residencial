@@ -3,12 +3,6 @@ package automacao.dispositivo;
 import automacao.mediator.Evento;
 import automacao.mediator.MediadorAutomacao;
 
-/**
- * Base de todos os dispositivos da casa.
- * Cada dispositivo é identificado pelo seu tipo e pelo cômodo onde está instalado.
- * Um dispositivo não conhece os outros: ele apenas avisa o mediador sobre
- * mudanças no seu próprio estado.
- */
 public abstract class Dispositivo {
 
     private final String comodo;

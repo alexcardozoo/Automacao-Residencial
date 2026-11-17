@@ -1,5 +1,10 @@
 package automacao;
 
+import automacao.comando.ComandoAbrir;
+import automacao.comando.ComandoDesligar;
+import automacao.comando.ComandoFechar;
+import automacao.comando.ComandoLigar;
+import automacao.comando.ControleRemoto;
 import automacao.dispositivo.ArCondicionado;
 import automacao.dispositivo.Camera;
 import automacao.dispositivo.Lampada;
@@ -23,27 +28,36 @@ public class Main {
         central.registrar(portaoGaragem);
         central.registrar(cameraGaragem);
 
-        System.out.println("=== Dispositivos registrados na central ===");
+        ControleRemoto controle = new ControleRemoto();
+
+        titulo("Dispositivos registrados na central");
         central.getDispositivos().forEach(System.out::println);
 
-        System.out.println();
-        System.out.println("=== Abrindo o portão (a central aciona câmera e luz) ===");
-        portaoGaragem.abrir();
+        titulo("Executando comandos pelo controle");
+        controle.executar(new ComandoLigar(luzSala));
+        controle.executar(new ComandoLigar(arQuarto));
+        controle.executar(new ComandoAbrir(portaoGaragem));
 
-        System.out.println();
-        System.out.println("=== Ligando o ar com o portão aberto (a central avisa) ===");
-        arQuarto.ligar();
+        titulo("Desfazendo o último comando (abrir portão)");
+        controle.desfazerUltimo();
 
-        System.out.println();
-        System.out.println("=== Fechando o portão (a central apaga a luz da garagem) ===");
-        portaoGaragem.fechar();
+        titulo("Mais comandos");
+        controle.executar(new ComandoDesligar(luzSala));
+        controle.executar(new ComandoFechar(portaoGaragem));
 
-        System.out.println();
-        System.out.println("=== Câmera detecta movimento (a central acende a luz) ===");
-        cameraGaragem.detectarMovimento();
+        titulo("Histórico (mais recente primeiro)");
+        controle.getHistorico().forEach(c -> System.out.println("- " + c));
 
-        System.out.println();
-        System.out.println("=== Estado final ===");
+        titulo("Desfazendo dois comandos");
+        controle.desfazerUltimo();
+        controle.desfazerUltimo();
+
+        titulo("Estado final");
         central.getDispositivos().forEach(System.out::println);
+    }
+
+    private static void titulo(String texto) {
+        System.out.println();
+        System.out.println("=== " + texto + " ===");
     }
 }

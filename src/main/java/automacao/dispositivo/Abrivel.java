@@ -7,4 +7,6 @@ public interface Abrivel {
     void fechar();
 
     boolean isAberto();
+
+    String getIdentificacao();
 }
