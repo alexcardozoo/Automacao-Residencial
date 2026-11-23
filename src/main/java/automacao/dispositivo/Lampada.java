@@ -1,6 +1,7 @@
 package automacao.dispositivo;
 
 import automacao.mediator.Evento;
+import automacao.visitor.DispositivoVisitor;
 
 public class Lampada extends Dispositivo implements Ligavel {
 
@@ -35,6 +36,11 @@ public class Lampada extends Dispositivo implements Ligavel {
     @Override
     public boolean isLigado() {
         return ligada;
+    }
+
+    @Override
+    public void aceitar(DispositivoVisitor visitor) {
+        visitor.visitar(this);
     }
 
     @Override

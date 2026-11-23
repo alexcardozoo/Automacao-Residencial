@@ -1,6 +1,7 @@
 package automacao.dispositivo;
 
 import automacao.mediator.Evento;
+import automacao.visitor.DispositivoVisitor;
 
 public class Camera extends Dispositivo implements Ativavel {
 
@@ -32,7 +33,6 @@ public class Camera extends Dispositivo implements Ativavel {
         notificar(Evento.DESATIVADO);
     }
 
-    /** Simula o sensor da câmera. Só reporta movimento se estiver ativa. */
     public void detectarMovimento() {
         if (!ativa) {
             log("movimento ignorado: câmera desativada");
@@ -45,6 +45,11 @@ public class Camera extends Dispositivo implements Ativavel {
     @Override
     public boolean isAtivo() {
         return ativa;
+    }
+
+    @Override
+    public void aceitar(DispositivoVisitor visitor) {
+        visitor.visitar(this);
     }
 
     @Override

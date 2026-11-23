@@ -1,6 +1,7 @@
 package automacao.dispositivo;
 
 import automacao.mediator.Evento;
+import automacao.visitor.DispositivoVisitor;
 
 public class ArCondicionado extends Dispositivo implements Ligavel {
 
@@ -53,6 +54,11 @@ public class ArCondicionado extends Dispositivo implements Ligavel {
         }
         this.temperatura = temperatura;
         log("temperatura ajustada para " + temperatura + "°C");
+    }
+
+    @Override
+    public void aceitar(DispositivoVisitor visitor) {
+        visitor.visitar(this);
     }
 
     @Override
