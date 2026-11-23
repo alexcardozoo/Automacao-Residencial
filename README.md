@@ -1,6 +1,6 @@
 # Automação Residencial
 
-Projeto 3 da disciplina **Padrões de Projeto** (IFTO – CST em Sistemas para Internet).
+Projeto da disciplina **Padrões de Projeto** (IFTO – CST em Sistemas para Internet).
 
 Sistema de automação residencial em Java que controla dispositivos (lâmpadas, ar-condicionado, portão, câmera e persiana), executa comandos e rotinas automáticas e entende comandos digitados em texto, como `ligar luz sala`.
 
