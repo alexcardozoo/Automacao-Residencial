@@ -1,9 +1,6 @@
 package automacao;
 
 import automacao.comando.ComandoAbrir;
-import automacao.comando.ComandoAtivar;
-import automacao.comando.ComandoDesligar;
-import automacao.comando.ComandoFechar;
 import automacao.comando.ComandoLigar;
 import automacao.comando.ControleRemoto;
 import automacao.comando.MacroComando;
@@ -12,6 +9,9 @@ import automacao.dispositivo.Camera;
 import automacao.dispositivo.Lampada;
 import automacao.dispositivo.Portao;
 import automacao.mediator.CentralAutomacao;
+import automacao.rotina.ComandoExecutarRotina;
+import automacao.rotina.RotinaNoturna;
+import automacao.rotina.RotinaSaidaCasa;
 
 public class Main {
 
@@ -21,59 +21,50 @@ public class Main {
         Lampada luzSala = new Lampada("sala");
         Lampada luzGaragem = new Lampada("garagem");
         ArCondicionado arQuarto = new ArCondicionado("quarto");
+        ArCondicionado arSala = new ArCondicionado("sala");
         Portao portaoGaragem = new Portao("garagem");
         Camera cameraGaragem = new Camera("garagem");
 
         central.registrar(luzSala);
         central.registrar(luzGaragem);
         central.registrar(arQuarto);
+        central.registrar(arSala);
         central.registrar(portaoGaragem);
         central.registrar(cameraGaragem);
 
         ControleRemoto controle = new ControleRemoto();
 
-        titulo("Dispositivos registrados na central");
-        central.getDispositivos().forEach(System.out::println);
-
-        titulo("Comando simples");
-        controle.executar(new ComandoLigar(luzSala));
-
-        MacroComando chegarEmCasa = new MacroComando("chegar em casa",
+        titulo("Chegando em casa (macro)");
+        controle.executar(new MacroComando("chegar em casa",
                 new ComandoAbrir(portaoGaragem),
                 new ComandoLigar(luzSala),
-                new ComandoLigar(arQuarto));
+                new ComandoLigar(arSala)));
 
-        MacroComando sairDeCasa = new MacroComando("sair de casa",
-                new ComandoDesligar(luzSala),
-                new ComandoDesligar(arQuarto),
-                new ComandoFechar(portaoGaragem),
-                new ComandoAtivar(cameraGaragem));
-
-        titulo("Executando macro 'chegar em casa'");
-        controle.executar(chegarEmCasa);
-
-        titulo("Estado após a macro");
+        titulo("Estado antes da rotina noturna");
         central.getDispositivos().forEach(System.out::println);
 
-        titulo("Desfazendo a última operação (a macro inteira)");
+        titulo("Rotina noturna");
+        controle.executar(new ComandoExecutarRotina(new RotinaNoturna(central)));
+
+        titulo("Estado após a rotina noturna");
+        central.getDispositivos().forEach(System.out::println);
+
+        titulo("Desfazendo a rotina noturna");
         controle.desfazerUltimo();
 
         titulo("Estado após desfazer");
         central.getDispositivos().forEach(System.out::println);
 
-        titulo("Executando macro 'sair de casa'");
-        controle.executar(sairDeCasa);
-
-        titulo("Histórico (mais recente primeiro)");
-        controle.getHistorico().forEach(c -> System.out.println("- " + c));
-
-        titulo("Desfazendo a macro 'sair de casa' e o comando simples");
-        controle.desfazerUltimo();
-        controle.desfazerUltimo();
-        controle.desfazerUltimo();
+        titulo("Rotina de saída de casa");
+        controle.executar(new ComandoExecutarRotina(new RotinaSaidaCasa(central)));
 
         titulo("Estado final");
         central.getDispositivos().forEach(System.out::println);
+
+        titulo("Saída de casa numa casa sem câmeras (hook cancela a rotina)");
+        CentralAutomacao casaSemCamera = new CentralAutomacao();
+        casaSemCamera.registrar(new Lampada("sala"));
+        new RotinaSaidaCasa(casaSemCamera).executar();
     }
 
     private static void titulo(String texto) {
