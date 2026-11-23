@@ -1,10 +1,12 @@
 package automacao;
 
 import automacao.comando.ComandoAbrir;
+import automacao.comando.ComandoAtivar;
 import automacao.comando.ComandoDesligar;
 import automacao.comando.ComandoFechar;
 import automacao.comando.ComandoLigar;
 import automacao.comando.ControleRemoto;
+import automacao.comando.MacroComando;
 import automacao.dispositivo.ArCondicionado;
 import automacao.dispositivo.Camera;
 import automacao.dispositivo.Lampada;
@@ -33,22 +35,40 @@ public class Main {
         titulo("Dispositivos registrados na central");
         central.getDispositivos().forEach(System.out::println);
 
-        titulo("Executando comandos pelo controle");
+        titulo("Comando simples");
         controle.executar(new ComandoLigar(luzSala));
-        controle.executar(new ComandoLigar(arQuarto));
-        controle.executar(new ComandoAbrir(portaoGaragem));
 
-        titulo("Desfazendo o último comando (abrir portão)");
+        MacroComando chegarEmCasa = new MacroComando("chegar em casa",
+                new ComandoAbrir(portaoGaragem),
+                new ComandoLigar(luzSala),
+                new ComandoLigar(arQuarto));
+
+        MacroComando sairDeCasa = new MacroComando("sair de casa",
+                new ComandoDesligar(luzSala),
+                new ComandoDesligar(arQuarto),
+                new ComandoFechar(portaoGaragem),
+                new ComandoAtivar(cameraGaragem));
+
+        titulo("Executando macro 'chegar em casa'");
+        controle.executar(chegarEmCasa);
+
+        titulo("Estado após a macro");
+        central.getDispositivos().forEach(System.out::println);
+
+        titulo("Desfazendo a última operação (a macro inteira)");
         controle.desfazerUltimo();
 
-        titulo("Mais comandos");
-        controle.executar(new ComandoDesligar(luzSala));
-        controle.executar(new ComandoFechar(portaoGaragem));
+        titulo("Estado após desfazer");
+        central.getDispositivos().forEach(System.out::println);
+
+        titulo("Executando macro 'sair de casa'");
+        controle.executar(sairDeCasa);
 
         titulo("Histórico (mais recente primeiro)");
         controle.getHistorico().forEach(c -> System.out.println("- " + c));
 
-        titulo("Desfazendo dois comandos");
+        titulo("Desfazendo a macro 'sair de casa' e o comando simples");
+        controle.desfazerUltimo();
         controle.desfazerUltimo();
         controle.desfazerUltimo();
 
