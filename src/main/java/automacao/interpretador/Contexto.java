@@ -3,14 +3,15 @@ package automacao.interpretador;
 import automacao.mediator.CentralAutomacao;
 import automacao.rotina.RotinaAutomatica;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 public class Contexto {
 
     private final CentralAutomacao central;
-    private final Map<String, RotinaAutomatica> rotinas = new HashMap<>();
+    private final Map<String, RotinaAutomatica> rotinas = new TreeMap<>();
 
     public Contexto(CentralAutomacao central) {
         this.central = central;
@@ -29,6 +30,6 @@ public class Contexto {
     }
 
     public Map<String, RotinaAutomatica> getRotinas() {
-        return Map.copyOf(rotinas);
+        return Collections.unmodifiableMap(rotinas);
     }
 }
