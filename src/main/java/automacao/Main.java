@@ -1,81 +1,66 @@
 package automacao;
 
-import automacao.comando.ComandoAbrir;
-import automacao.comando.ComandoLigar;
 import automacao.comando.ControleRemoto;
-import automacao.comando.MacroComando;
 import automacao.dispositivo.ArCondicionado;
 import automacao.dispositivo.Camera;
 import automacao.dispositivo.Lampada;
 import automacao.dispositivo.Portao;
+import automacao.interpretador.ComandoInvalidoException;
+import automacao.interpretador.Contexto;
+import automacao.interpretador.InterpretadorComando;
 import automacao.mediator.CentralAutomacao;
-import automacao.rotina.ComandoExecutarRotina;
 import automacao.rotina.RotinaNoturna;
 import automacao.rotina.RotinaSaidaCasa;
 import automacao.visitor.DiagnosticoVisitor;
-import automacao.visitor.InventarioVisitor;
+
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
         CentralAutomacao central = new CentralAutomacao();
 
-        Lampada luzSala = new Lampada("sala");
-        Lampada luzGaragem = new Lampada("garagem");
-        ArCondicionado arQuarto = new ArCondicionado("quarto");
-        ArCondicionado arSala = new ArCondicionado("sala");
-        Portao portaoGaragem = new Portao("garagem");
-        Camera cameraGaragem = new Camera("garagem");
+        central.registrar(new Lampada("sala"));
+        central.registrar(new Lampada("quarto"));
+        central.registrar(new Lampada("garagem"));
+        central.registrar(new ArCondicionado("quarto"));
+        central.registrar(new ArCondicionado("sala"));
+        central.registrar(new Portao("garagem"));
+        central.registrar(new Camera("garagem"));
 
-        central.registrar(luzSala);
-        central.registrar(luzGaragem);
-        central.registrar(arQuarto);
-        central.registrar(arSala);
-        central.registrar(portaoGaragem);
-        central.registrar(cameraGaragem);
+        Contexto contexto = new Contexto(central);
+        contexto.registrarRotina("noturna", new RotinaNoturna(central));
+        contexto.registrarRotina("saida", new RotinaSaidaCasa(central));
 
+        InterpretadorComando interpretador = new InterpretadorComando(contexto);
         ControleRemoto controle = new ControleRemoto();
 
-        titulo("Chegando em casa (macro)");
-        controle.executar(new MacroComando("chegar em casa",
-                new ComandoAbrir(portaoGaragem),
-                new ComandoLigar(luzSala),
-                new ComandoLigar(arSala)));
+        List<String> textos = List.of(
+                "ligar luz sala",
+                "abrir portao",
+                "Ligar o Ar-Condicionado do Quarto",
+                "desligar ar quarto",
+                "acender luz",
+                "executar rotina noturna",
+                "ativar camera garagem",
+                "executar rotina saída de casa",
+                "ligar portao",
+                "voar luz sala",
+                "ligar geladeira cozinha",
+                "ligar luz banheiro",
+                "executar rotina ferias");
 
-        titulo("Inventário (visitor)");
-        System.out.println(central.aplicar(new InventarioVisitor()).getRelatorio());
+        for (String texto : textos) {
+            System.out.println();
+            System.out.println("> " + texto);
+            try {
+                controle.executar(interpretador.interpretar(texto));
+            } catch (ComandoInvalidoException e) {
+                System.out.println("Comando inválido: " + e.getMessage());
+            }
+        }
 
-        arSala.setTemperatura(16);
-
-        titulo("Diagnóstico antes da rotina noturna (visitor)");
-        System.out.println(central.aplicar(new DiagnosticoVisitor()).getRelatorio());
-
-        titulo("Rotina noturna");
-        controle.executar(new ComandoExecutarRotina(new RotinaNoturna(central)));
-
-        titulo("Estado após a rotina noturna");
-        central.getDispositivos().forEach(System.out::println);
-
-        titulo("Desfazendo a rotina noturna");
-        controle.desfazerUltimo();
-
-        titulo("Estado após desfazer");
-        central.getDispositivos().forEach(System.out::println);
-
-        titulo("Rotina de saída de casa");
-        controle.executar(new ComandoExecutarRotina(new RotinaSaidaCasa(central)));
-
-        titulo("Diagnóstico final (visitor)");
-        System.out.println(central.aplicar(new DiagnosticoVisitor()).getRelatorio());
-
-        titulo("Saída de casa numa casa sem câmeras (hook cancela a rotina)");
-        CentralAutomacao casaSemCamera = new CentralAutomacao();
-        casaSemCamera.registrar(new Lampada("sala"));
-        new RotinaSaidaCasa(casaSemCamera).executar();
-    }
-
-    private static void titulo(String texto) {
         System.out.println();
-        System.out.println("=== " + texto + " ===");
+        System.out.println(central.aplicar(new DiagnosticoVisitor()).getRelatorio());
     }
 }
