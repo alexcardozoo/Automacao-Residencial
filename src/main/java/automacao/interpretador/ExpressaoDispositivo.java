@@ -4,6 +4,7 @@ import automacao.dispositivo.ArCondicionado;
 import automacao.dispositivo.Camera;
 import automacao.dispositivo.Dispositivo;
 import automacao.dispositivo.Lampada;
+import automacao.dispositivo.Persiana;
 import automacao.dispositivo.Portao;
 
 import java.util.Map;
@@ -15,7 +16,8 @@ public class ExpressaoDispositivo implements Expressao<Class<? extends Dispositi
             "lampada", Lampada.class,
             "ar", ArCondicionado.class,
             "portao", Portao.class,
-            "camera", Camera.class);
+            "camera", Camera.class,
+            "persiana", Persiana.class);
 
     private final String palavra;
 

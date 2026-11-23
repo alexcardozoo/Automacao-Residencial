@@ -3,6 +3,7 @@ package automacao;
 import automacao.dispositivo.ArCondicionado;
 import automacao.dispositivo.Camera;
 import automacao.dispositivo.Lampada;
+import automacao.dispositivo.Persiana;
 import automacao.dispositivo.Portao;
 import automacao.interpretador.Contexto;
 import automacao.mediator.CentralAutomacao;
@@ -35,6 +36,8 @@ public class Main {
         central.registrar(new ArCondicionado("quarto"));
         central.registrar(new Portao("garagem"));
         central.registrar(new Camera("garagem"));
+        central.registrar(new Persiana("sala"));
+        central.registrar(new Persiana("quarto"));
         return central;
     }
 }
