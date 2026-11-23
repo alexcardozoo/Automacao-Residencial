@@ -12,6 +12,8 @@ import automacao.mediator.CentralAutomacao;
 import automacao.rotina.ComandoExecutarRotina;
 import automacao.rotina.RotinaNoturna;
 import automacao.rotina.RotinaSaidaCasa;
+import automacao.visitor.DiagnosticoVisitor;
+import automacao.visitor.InventarioVisitor;
 
 public class Main {
 
@@ -40,8 +42,13 @@ public class Main {
                 new ComandoLigar(luzSala),
                 new ComandoLigar(arSala)));
 
-        titulo("Estado antes da rotina noturna");
-        central.getDispositivos().forEach(System.out::println);
+        titulo("Inventário (visitor)");
+        System.out.println(central.aplicar(new InventarioVisitor()).getRelatorio());
+
+        arSala.setTemperatura(16);
+
+        titulo("Diagnóstico antes da rotina noturna (visitor)");
+        System.out.println(central.aplicar(new DiagnosticoVisitor()).getRelatorio());
 
         titulo("Rotina noturna");
         controle.executar(new ComandoExecutarRotina(new RotinaNoturna(central)));
@@ -58,8 +65,8 @@ public class Main {
         titulo("Rotina de saída de casa");
         controle.executar(new ComandoExecutarRotina(new RotinaSaidaCasa(central)));
 
-        titulo("Estado final");
-        central.getDispositivos().forEach(System.out::println);
+        titulo("Diagnóstico final (visitor)");
+        System.out.println(central.aplicar(new DiagnosticoVisitor()).getRelatorio());
 
         titulo("Saída de casa numa casa sem câmeras (hook cancela a rotina)");
         CentralAutomacao casaSemCamera = new CentralAutomacao();

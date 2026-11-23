@@ -1,6 +1,7 @@
 package automacao.dispositivo;
 
 import automacao.mediator.Evento;
+import automacao.visitor.DispositivoVisitor;
 
 public class Portao extends Dispositivo implements Abrivel {
 
@@ -35,6 +36,11 @@ public class Portao extends Dispositivo implements Abrivel {
     @Override
     public boolean isAberto() {
         return aberto;
+    }
+
+    @Override
+    public void aceitar(DispositivoVisitor visitor) {
+        visitor.visitar(this);
     }
 
     @Override

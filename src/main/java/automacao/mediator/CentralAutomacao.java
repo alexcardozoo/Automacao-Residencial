@@ -5,6 +5,7 @@ import automacao.dispositivo.Camera;
 import automacao.dispositivo.Dispositivo;
 import automacao.dispositivo.Lampada;
 import automacao.dispositivo.Portao;
+import automacao.visitor.DispositivoVisitor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,6 +60,11 @@ public class CentralAutomacao implements MediadorAutomacao {
                     .forEach(portao -> log("aviso: " + ar.getIdentificacao()
                             + " ligado com " + portao.getIdentificacao() + " aberto"));
         }
+    }
+
+    public <V extends DispositivoVisitor> V aplicar(V visitor) {
+        dispositivos.forEach(dispositivo -> dispositivo.aceitar(visitor));
+        return visitor;
     }
 
     public List<Dispositivo> getDispositivos() {

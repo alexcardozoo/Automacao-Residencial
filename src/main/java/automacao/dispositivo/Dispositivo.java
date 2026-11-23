@@ -2,6 +2,7 @@ package automacao.dispositivo;
 
 import automacao.mediator.Evento;
 import automacao.mediator.MediadorAutomacao;
+import automacao.visitor.DispositivoVisitor;
 
 public abstract class Dispositivo {
 
@@ -27,6 +28,10 @@ public abstract class Dispositivo {
         if (mediador != null) {
             mediador.notificar(this, evento);
         }
+    }
+
+    public void aceitar(DispositivoVisitor visitor) {
+        visitor.visitar(this);
     }
 
     public abstract String getTipo();
