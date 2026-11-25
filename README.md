@@ -18,7 +18,6 @@ O objetivo é mostrar como os dispositivos colaboram **sem se conhecerem diretam
 
 ## Sumário
 
-- [Como executar](#como-executar)
 - [Usando o sistema](#usando-o-sistema)
 - [Estrutura de pacotes](#estrutura-de-pacotes)
 - [Visão geral: como os padrões trabalham juntos](#visão-geral-como-os-padrões-trabalham-juntos)
@@ -34,41 +33,6 @@ O objetivo é mostrar como os dispositivos colaboram **sem se conhecerem diretam
 
 ---
 
-## Como executar
-
-**Requisito:** JDK 17 ou superior.
-
-### No Visual Studio Code
-
-1. Instale a extensão **Extension Pack for Java** (Microsoft).
-2. Abra a pasta do projeto (`File > Open Folder...`). O VS Code reconhece o `pom.xml` e configura o projeto Maven sozinho.
-3. Abra `src/main/java/automacao/Main.java` e clique em **Run** acima do método `main`.
-4. O console da central abre no terminal integrado. Digite `ajuda` para ver os comandos.
-
-### Pelo terminal com Maven
-
-```bash
-mvn compile
-java -cp target/classes automacao.Main
-```
-
-### Pelo terminal sem Maven
-
-Linux / macOS:
-
-```bash
-javac -encoding UTF-8 -d out $(find src/main/java -name "*.java")
-java -cp out automacao.Main
-```
-
-Windows (PowerShell):
-
-```powershell
-javac -encoding UTF-8 -d out (Get-ChildItem -Recurse src/main/java -Filter *.java).FullName
-java -cp out automacao.Main
-```
-
----
 
 ## Usando o sistema
 
